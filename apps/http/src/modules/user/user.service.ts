@@ -1,5 +1,5 @@
 import { ISearchUserParams, IUser, IUserCreate, UserRepository } from '@/db';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class UserService {
@@ -9,12 +9,24 @@ export class UserService {
     return this.userRepository.create(data);
   }
 
-  findById(id: string): Promise<IUser | null> {
-    return this.userRepository.getById(id);
+  async findById(id: string): Promise<IUser> {
+    const user = await this.userRepository.getById(id);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
   }
 
-  findByEmail(email: string): Promise<IUser | null> {
-    return this.userRepository.getByEmail(email);
+  async findByEmail(email: string): Promise<IUser> {
+    const user = await this.userRepository.getByEmail(email);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
   }
 
   findAll(params: ISearchUserParams): Promise<Array<IUser>> {
