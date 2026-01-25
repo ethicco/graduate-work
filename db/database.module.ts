@@ -7,6 +7,8 @@ import {
   HotelSchema,
   HotelRoom,
   HotelRoomSchema,
+  Reservation,
+  ReservationSchema,
 } from './schemes';
 import {
   HotelRepository,
@@ -20,6 +22,7 @@ import {
       { name: User.name, schema: UserSchema },
       { name: Hotel.name, schema: HotelSchema },
       { name: HotelRoom.name, schema: HotelRoomSchema },
+      { name: Reservation.name, schema: ReservationSchema },
     ]),
   ],
   providers: [UserRepository, HotelRepository, HotelRoomRepository],
