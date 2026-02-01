@@ -16,16 +16,20 @@ export class HotelRoomRepository {
     private readonly hotelRoomModel: Model<HotelRoom>,
   ) {}
 
-  create(data: IHotelRoomCreate): Promise<IHotelRoom> {
-    return this.hotelRoomModel.create(data);
+  async create(data: IHotelRoomCreate): Promise<IHotelRoom> {
+    const hotelRoom = await this.hotelRoomModel.create(data);
+
+    return hotelRoom.populate('hotelId');
   }
 
   update(id: string, data: IHotelRoomUpdate): Promise<IHotelRoom | null> {
-    return this.hotelRoomModel.findByIdAndUpdate(id, data).exec();
+    return this.hotelRoomModel
+      .findByIdAndUpdate(id, data, { new: true })
+      .exec();
   }
 
   getById(id: string): Promise<IHotelRoom | null> {
-    return this.hotelRoomModel.findById(id).exec();
+    return this.hotelRoomModel.findById(id).populate('hotelId').exec();
   }
 
   getList(params: ISearchHotelRoomParams): Promise<Array<IHotelRoom>> {
@@ -36,6 +40,7 @@ export class HotelRoomRepository {
         hotelId,
         isEnabled,
       })
+      .populate('hotelId')
       .skip((offset - 1) * limit)
       .limit(limit)
       .exec();

@@ -8,6 +8,7 @@ import { UserModule } from './modules/user';
 import { HotelModule } from './modules/hotel';
 import { HotelRoomModule } from './modules/hotel-room';
 import { ReservationModule } from './modules/reservation';
+import { SupportRequestModule } from './modules/support-request/support-request.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ReservationModule } from './modules/reservation';
     HotelModule,
     HotelRoomModule,
     ReservationModule,
+    SupportRequestModule,
   ],
   controllers: [AppController],
   providers: [AppService],

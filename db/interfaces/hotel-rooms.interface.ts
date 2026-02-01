@@ -15,8 +15,10 @@ export interface IHotelRoom {
 
 export interface IHotelRoomCreate extends Omit<
   IHotelRoom,
-  'id' | 'createdAt' | 'updatedAt'
-> {}
+  'id' | 'createdAt' | 'updatedAt' | 'isEnabled'
+> {
+  isEnabled?: boolean;
+}
 
 export interface IHotelRoomUpdate extends Partial<
   Omit<IHotelRoom, 'id' | 'createdAt' | 'updatedAt'>

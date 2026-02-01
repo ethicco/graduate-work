@@ -9,10 +9,14 @@ import {
   HotelRoomSchema,
   Reservation,
   ReservationSchema,
+  SupportRequest,
+  SupportRequestSchema,
 } from './schemes';
 import {
   HotelRepository,
   HotelRoomRepository,
+  ReservationRepository,
+  SupportRequestRepository,
   UserRepository,
 } from './repositories';
 
@@ -23,9 +27,22 @@ import {
       { name: Hotel.name, schema: HotelSchema },
       { name: HotelRoom.name, schema: HotelRoomSchema },
       { name: Reservation.name, schema: ReservationSchema },
+      { name: SupportRequest.name, schema: SupportRequestSchema },
     ]),
   ],
-  providers: [UserRepository, HotelRepository, HotelRoomRepository],
-  exports: [UserRepository, HotelRepository, HotelRoomRepository],
+  providers: [
+    UserRepository,
+    HotelRepository,
+    HotelRoomRepository,
+    ReservationRepository,
+    SupportRequestRepository,
+  ],
+  exports: [
+    UserRepository,
+    HotelRepository,
+    HotelRoomRepository,
+    ReservationRepository,
+    SupportRequestRepository,
+  ],
 })
 export class DatabaseModule {}
