@@ -1,20 +1,37 @@
 import {
   IReservation,
-  IReservationCreate,
   IReservationSearchOptions,
   ReservationRepository,
+  HotelRoomRepository,
 } from '@/db';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateReservationRequest } from './dto';
 
 @Injectable()
 export class ReservationService {
-  constructor(private readonly reservationRepository: ReservationRepository) {}
+  constructor(
+    private readonly reservationRepository: ReservationRepository,
+    private readonly hotelRoomRepository: HotelRoomRepository,
+  ) {}
 
-  addReservation(data: IReservationCreate): Promise<IReservation> {
-    return this.reservationRepository.create(data);
+  async addReservation(
+    userId: string,
+    data: CreateReservationRequest,
+  ): Promise<IReservation> {
+    const hotelRoom = await this.hotelRoomRepository.getById(data.roomId);
+
+    if (!hotelRoom) {
+      throw new NotFoundException('Hotel room not found');
+    }
+
+    return this.reservationRepository.create({
+      ...data,
+      userId,
+      hotelId: hotelRoom.hotelId,
+    });
   }
 
-  async removeReservation(id: string): Promise<void> {
+  async removeReservation(userId: string, id: string): Promise<void> {
     const reservation = await this.reservationRepository.deleteById(id);
 
     if (!reservation) {

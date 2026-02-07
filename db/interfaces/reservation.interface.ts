@@ -1,7 +1,7 @@
 export interface IReservationSearchOptions {
-  userId: string;
-  dateStart: Date;
-  dateEnd: Date;
+  userId?: string;
+  dateStart?: Date;
+  dateEnd?: Date;
 }
 
 export interface IReservation {

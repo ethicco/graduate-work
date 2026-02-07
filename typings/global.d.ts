@@ -6,6 +6,15 @@ declare global {
         [P in keyof T]?: DeepPartial<T[P]>;
       }
     : T;
+
+  namespace Express {
+    interface User {
+      id: string;
+      email: string;
+      name: string;
+      contactPhone: string;
+    }
+  }
 }
 
 export {};

@@ -20,20 +20,13 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
+    "strictPropertyInitialization": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@/common": [
-        "common/"
-      ],
-      "@/common/*": [
-        "common/*"
-      ],
-      "@/db": [
-        "db/"
-      ],
-      "@/db/*": [
-        "db/*"
-      ],
+      "@/common": ["common/"],
+      "@/common/*": ["common/*"],
+      "@/db": ["db/"],
+      "@/db/*": ["db/*"]
     }
   },
   "files": ["typings/global.d.ts"],

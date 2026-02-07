@@ -9,6 +9,7 @@ import { HotelModule } from './modules/hotel';
 import { HotelRoomModule } from './modules/hotel-room';
 import { ReservationModule } from './modules/reservation';
 import { SupportRequestModule } from './modules/support-request/support-request.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { SupportRequestModule } from './modules/support-request/support-request.
       }),
       inject: [ConfigService],
     }),
+    AuthModule,
     UserModule,
     HotelModule,
     HotelRoomModule,

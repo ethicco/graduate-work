@@ -8,6 +8,7 @@ import type {
   IReservationUpdate,
 } from '../interfaces';
 import { Reservation } from '../schemes';
+import { cleanFilter } from '../utils';
 
 @Injectable()
 export class ReservationRepository {
@@ -24,11 +25,13 @@ export class ReservationRepository {
       ],
     });
 
-    if (bookedRooms) {
+    if (bookedRooms.length) {
       throw new Error('Room not available on selected dates');
     }
 
-    return this.reservationModel.create(data);
+    const reservation = await this.reservationModel.create(data);
+
+    return reservation.populate(['hotelId', 'roomId']);
   }
 
   update(id: string, data: IReservationUpdate): Promise<IReservation | null> {
@@ -40,14 +43,9 @@ export class ReservationRepository {
   }
 
   getList(params: IReservationSearchOptions): Promise<Array<IReservation>> {
-    const { userId, dateStart, dateEnd } = params;
-
     return this.reservationModel
-      .find({
-        userId,
-        dateStart,
-        dateEnd,
-      })
+      .find(cleanFilter(params))
+      .populate(['hotelId', 'roomId'])
       .exec();
   }
 
