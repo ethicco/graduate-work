@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { HotelService } from './hotel.service';
 import {
   ApiCreatedResponse,
@@ -13,8 +22,11 @@ import {
   UpdateHotelRequest,
 } from './dto';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
+import { AuthGuard, RolesGuard } from '@/common/guards';
+import { UserRoleEnum } from '@/db';
 
 @ApiTags('Отели')
+@UseGuards(AuthGuard, RolesGuard([UserRoleEnum.ADMIN]))
 @Controller({ path: '/admin/hotels', version: '1' })
 export class HotelController {
   constructor(private readonly hotelService: HotelService) {}

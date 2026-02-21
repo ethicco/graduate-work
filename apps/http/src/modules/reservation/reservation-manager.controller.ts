@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ReservationService } from './reservation.service';
 import { ReservationListRequest, ReservationResponse } from './dto';
 import {
@@ -8,8 +16,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '@/common/guards';
+import { UserRoleEnum } from '@/db';
 
 @ApiTags('Бронирования')
+@UseGuards(AuthGuard, RolesGuard([UserRoleEnum.MANAGER]))
 @Controller({ path: '/manager/reservations', version: '1' })
 export class ReservationManagerController {
   constructor(private readonly reservationService: ReservationService) {}
@@ -19,12 +31,9 @@ export class ReservationManagerController {
     summary: 'Получить список броней конкретного пользователя.',
   })
   @ApiOkResponse({ type: ReservationResponse })
-  @Get(':userId')
-  getList(
-    @Param('userId') userId: string,
-    @Query() dto: ReservationListRequest,
-  ) {
-    return this.reservationService.getReservations({ ...dto, userId });
+  @Get('')
+  getList(@Query() dto: ReservationListRequest) {
+    return this.reservationService.getReservations(dto);
   }
 
   @ApiOperation({
