@@ -16,8 +16,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
-import { AuthGuard } from '@nestjs/passport';
-import { RolesGuard } from '@/common/guards';
+import { AuthGuard, RolesGuard } from '@/common/guards';
 import { UserRoleEnum } from '@/db';
 
 @ApiTags('Бронирования')
