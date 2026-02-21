@@ -4,7 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { JwtPayload } from './types';
-import { RoleEnum } from '@/db';
+import { UserRoleEnum } from '@/db';
 
 @Injectable()
 export class RefreshTokenStrategy extends PassportStrategy(
@@ -25,7 +25,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
     id: string;
     email: string;
     name: string;
-    role: RoleEnum;
+    role: UserRoleEnum;
     iat: number;
     exp: number;
   } {

@@ -10,6 +10,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import session from 'express-session';
 import passport from 'passport';
+import { WebSocketSessionAdapter } from '@/common/adapters/ws-session.adapter';
 
 const initializeSwaggerDocumentation = (
   app: INestApplication,
@@ -39,16 +40,22 @@ async function bootstrap(): Promise<void> {
   });
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
 
-  app.use(
-    session({
-      secret: configService.get<string>('SESSION_SECRET', 'Secret'),
-      resave: false,
-      saveUninitialized: false,
-      cookie: { maxAge: 3_600_000 },
-    }),
-  );
+  const sessionMiddleware = session({
+    secret: configService.get<string>('SESSION_SECRET', 'Secret'),
+    resave: false,
+    saveUninitialized: false,
+    cookie: { maxAge: 3_600_000 },
+  });
+
+  app.use(sessionMiddleware);
   app.use(passport.initialize());
   app.use(passport.session());
+
+  const adapter = new WebSocketSessionAdapter(app, sessionMiddleware);
+
+  adapter['passport'] = passport;
+
+  app.useWebSocketAdapter(adapter);
 
   initializeSwaggerDocumentation(app, swaggerPath);
 

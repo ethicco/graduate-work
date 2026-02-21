@@ -20,7 +20,7 @@ import type { Request } from 'express';
 import { UserResponse } from './dto';
 
 @ApiTags('Авторизация')
-@Controller({ path: 'auth', version: '1' })
+@Controller({ path: '/auth', version: '1' })
 export class AuthController {
   @ApiOperation({
     summary: 'Авторизация пользователя.',

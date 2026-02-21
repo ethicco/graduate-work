@@ -28,7 +28,7 @@ export class UserRepository {
   }
 
   getByEmail(email: string): Promise<IUser | null> {
-    return this.userModel.findOne({ email }).exec();
+    return this.userModel.findOne({ email }).select('+passwordHash').exec();
   }
 
   getList(params: ISearchUserParams): Promise<Array<IUser>> {
@@ -36,9 +36,9 @@ export class UserRepository {
 
     return this.userModel
       .find({
-        email: { $regex: email, $options: 'i' },
-        name: { $regex: name, $options: 'i' },
-        contactPhone: { $regex: contactPhone, $options: 'i' },
+        email: { $regex: email || '', $options: 'i' },
+        name: { $regex: name || '', $options: 'i' },
+        contactPhone: { $regex: contactPhone || '', $options: 'i' },
       })
       .skip((offset - 1) * limit)
       .limit(limit)

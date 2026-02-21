@@ -1,10 +1,10 @@
-import { RoleEnum } from '@/db';
+import { UserRoleEnum } from '@/db';
 
 export type JwtPayload = {
   id: string;
   email: string;
   name: string;
-  role: RoleEnum;
+  role: UserRoleEnum;
   iat: number;
   exp: number;
 };

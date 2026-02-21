@@ -1,20 +1,20 @@
-import { RoleEnum } from '../enums';
+import { UserRoleEnum } from '../enums';
 
 export interface ISearchUserParams {
   limit: number;
   offset: number;
-  email: string;
-  name: string;
-  contactPhone: string;
+  email?: string;
+  name?: string;
+  contactPhone?: string;
 }
 
 export interface IUser {
   id: string;
   email: string;
-  passwordHash: string;
+  passwordHash?: string;
   name: string;
   contactPhone: string;
-  role: RoleEnum;
+  role: UserRoleEnum;
 }
 
 export interface IUserCreate extends Omit<IUser, 'id'> {}

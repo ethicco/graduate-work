@@ -12,7 +12,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     private readonly commonUtils: CommonUtils,
     private readonly configService: ConfigService,
   ) {
-    super({ usernameField: 'email', passwordField: 'password', session: true });
+    super({ usernameField: 'email', passwordField: 'password' });
   }
 
   async validate(
@@ -27,7 +27,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
     const isVerified = await this.commonUtils.verifyPassword(
       password,
-      user.passwordHash,
+      user.passwordHash!,
       this.configService.get('PASSWORD_SALT', 'sault'),
     );
 

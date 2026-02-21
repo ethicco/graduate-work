@@ -1,1 +1,1 @@
-export * from './support-request.response';
+export * from './appeal.response';

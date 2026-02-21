@@ -1,3 +1,5 @@
+import { UserRoleEnum } from '@/db';
+
 declare global {
   type AnyObject = Record<string, unknown>;
 
@@ -13,6 +15,7 @@ declare global {
       email: string;
       name: string;
       contactPhone: string;
+      role: UserRoleEnum;
     }
   }
 }

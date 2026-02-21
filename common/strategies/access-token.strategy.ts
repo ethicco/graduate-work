@@ -4,7 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
 import { JwtPayload } from './types';
-import { RoleEnum } from '@/db';
+import { UserRoleEnum } from '@/db';
 
 @Injectable()
 export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -19,7 +19,7 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt') {
     id: string;
     email: string;
     name: string;
-    role: RoleEnum;
+    role: UserRoleEnum;
     iat: number;
     exp: number;
   } {

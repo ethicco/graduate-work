@@ -1,4 +1,4 @@
-import { RoleEnum, UserRepository } from '@/db';
+import { UserRoleEnum, UserRepository } from '@/db';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CommonUtils } from '@/common/utils/common.utils';
 import { ConfigService } from '@nestjs/config';
@@ -12,7 +12,7 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async register(dto: RegisterUserRequest & { role: RoleEnum }) {
+  async register(dto: RegisterUserRequest & { role: UserRoleEnum }) {
     const exists = await this.userRepository.getByEmail(dto.email);
 
     if (exists) {

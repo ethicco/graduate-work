@@ -6,9 +6,10 @@ import { DatabaseModule } from '@/db';
 import { AuthController } from './auth.controller';
 import { CommonUtils } from '@/common/utils/common.utils';
 import { AuthClientController } from './auth-client.controller';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, PassportModule.register({ session: true })],
   controllers: [AuthClientController, AuthController],
   providers: [AuthService, LocalStrategy, SessionSerializer, CommonUtils],
 })

@@ -1,11 +1,12 @@
 import { IMessage } from './message.interface';
+import { IUser } from './user.interface';
 
 export interface ISupportRequest {
   id: string;
-  userId: string;
+  userId: string | Omit<IUser, 'role'>;
   createdAt: Date;
   messages?: Array<IMessage>;
-  isActive?: boolean;
+  isActive: boolean;
 }
 
 export interface ISupportRequestCreate
@@ -22,6 +23,8 @@ export interface IMarkMessagesAsRead {
 }
 
 export interface IGetChatListParams {
-  userId: string | null;
+  userId?: string | null;
   isActive: boolean;
+  limit: number;
+  offset: number;
 }
