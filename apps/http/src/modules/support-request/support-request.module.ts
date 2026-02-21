@@ -4,6 +4,7 @@ import { ClientSupportRequestService, SupportRequestService } from './services';
 import { ClientSupportRequestController } from './client-support-request.controller';
 import { ManagerSupportRequestController } from './manasger-support-request.controller';
 import { CommonSupportRequestController } from './common-support-request.controller';
+import { SupportChatGateway } from './getways/support-chat.gateway';
 
 @Module({
   imports: [DatabaseModule],
@@ -12,6 +13,10 @@ import { CommonSupportRequestController } from './common-support-request.control
     ManagerSupportRequestController,
     CommonSupportRequestController,
   ],
-  providers: [ClientSupportRequestService, SupportRequestService],
+  providers: [
+    ClientSupportRequestService,
+    SupportRequestService,
+    SupportChatGateway,
+  ],
 })
 export class SupportRequestModule {}
