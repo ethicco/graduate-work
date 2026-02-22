@@ -4,7 +4,7 @@ services:
     build: .
     environment:
       - HTTP_API_PORT=${HTTP_API_PORT}
-      - MONGODB_UR=${MONGODB_UR}
+      - MONGODB_URL=${MONGODB_URL}
       - PASSWORD_SALT=${PASSWORD_SALT}
       - SESSION_SECRET=${SESSION_SECRET}
     ports:
