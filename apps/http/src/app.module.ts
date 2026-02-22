@@ -10,6 +10,8 @@ import { HotelRoomModule } from './modules/hotel-room';
 import { ReservationModule } from './modules/reservation';
 import { SupportRequestModule } from './modules/support-request/support-request.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'node:path';
 
 @Module({
   imports: [
@@ -20,6 +22,14 @@ import { AuthModule } from './modules/auth/auth.module';
         uri: configService.get('MONGODB_URL'),
       }),
       inject: [ConfigService],
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'public'),
+      serveRoot: '/resources/',
+      exclude: ['/api*'],
+      serveStaticOptions: {
+        index: false,
+      },
     }),
     AuthModule,
     UserModule,

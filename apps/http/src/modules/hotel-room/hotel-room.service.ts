@@ -1,3 +1,4 @@
+import fs from 'node:fs/promises';
 import { HotelRoomRepository, IHotelRoom, ISearchHotelRoomsParams } from '@/db';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import {
@@ -14,7 +15,7 @@ export class HotelRoomService {
     data: CreateHotelRoomRequest,
     images: Array<Express.Multer.File>,
   ): Promise<HotelRoomResponse> {
-    const imagesUrls = images.map((img) => `${img.fieldname}/${img.filename}`);
+    const imagesUrls = images.map((img) => `${img.filename}`);
 
     return this.hotelRoomRepository.create({
       ...data,
@@ -43,20 +44,29 @@ export class HotelRoomService {
     data: UpdateHotelRoomRequest,
     files: Array<Express.Multer.File>,
   ): Promise<IHotelRoom> {
-    const images = [
-      ...data.images,
-      ...files.map((file) => `${file.fieldname}/${file.filename}`),
-    ];
+    const hotelRoom = await this.hotelRoomRepository.getById(id);
 
-    const hotelRoom = await this.hotelRoomRepository.update(id, {
+    const deleteImages =
+      hotelRoom?.images.filter((img) => !data.images.includes(img)) || [];
+
+    try {
+      await Promise.all(deleteImages?.map((img) => fs.unlink(img)));
+      console.log('Файлы удалёны');
+    } catch (err) {
+      console.error('Ошибка удаления', err);
+    }
+
+    const images = [...data.images, ...files.map((file) => `${file.filename}`)];
+
+    const hotelRoomUpdated = await this.hotelRoomRepository.update(id, {
       ...data,
       images,
     });
 
-    if (!hotelRoom) {
+    if (!hotelRoomUpdated) {
       throw new NotFoundException('Hotel room not found');
     }
 
-    return hotelRoom;
+    return hotelRoomUpdated;
   }
 }

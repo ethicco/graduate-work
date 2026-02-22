@@ -15,7 +15,10 @@ export const storage = diskStorage({
         '..',
         '..',
         '..',
-        'public/hotels/rooms/images',
+        'public',
+        'hotels',
+        'rooms',
+        'images',
       ),
     );
   },
