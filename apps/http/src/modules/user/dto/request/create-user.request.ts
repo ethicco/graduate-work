@@ -16,7 +16,7 @@ export class CreateUserRequest {
   name: string;
 
   @ApiProperty({ description: 'Номер телефона пользователя.' })
-  @IsPhoneNumber('RU')
+  @IsPhoneNumber()
   contactPhone: string;
 
   @ApiProperty({ description: 'Роль пользователя.' })

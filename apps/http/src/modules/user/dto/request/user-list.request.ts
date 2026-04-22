@@ -30,7 +30,7 @@ export class UserListRequest {
   email?: string;
 
   @ApiPropertyOptional({ description: 'Номер телефона пользователя.' })
-  @IsPhoneNumber('RU')
+  @IsPhoneNumber()
   @IsOptional()
   contactPhone?: string;
 }

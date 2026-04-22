@@ -15,6 +15,6 @@ export class RegisterUserRequest {
   name: string;
 
   @ApiProperty({ description: 'Номер телефона пользователя.' })
-  @IsPhoneNumber('RU')
+  @IsPhoneNumber()
   contactPhone: string;
 }
