@@ -10,20 +10,46 @@ import {
 } from './dto';
 import { UPLOADS_DIR } from './utils';
 
+type HotelRoomPopulated = Omit<IHotelRoom, 'hotelId'> & {
+  _id: Types.ObjectId;
+  hotelId: {
+    _id: Types.ObjectId;
+    id?: string;
+    title: string;
+    description: string;
+  };
+};
+
 @Injectable()
 export class HotelRoomService {
   constructor(private readonly hotelRoomRepository: HotelRoomRepository) {}
 
-  create(
+  private toResponse(doc: HotelRoomPopulated): HotelRoomResponse {
+    const hotel = doc.hotelId;
+    return {
+      id: doc.id ?? doc._id.toString(),
+      description: doc.description,
+      images: doc.images,
+      hotel: {
+        id: hotel?.id ?? hotel?._id.toString(),
+        title: hotel?.title,
+        description: hotel?.description,
+      },
+    };
+  }
+
+  async create(
     data: CreateHotelRoomRequest,
     images: Array<Express.Multer.File>,
   ): Promise<HotelRoomResponse> {
     const imagesUrls = images.map((img) => `${img.filename}`);
 
-    return this.hotelRoomRepository.create({
+    const hotelRoom = await this.hotelRoomRepository.create({
       ...data,
       images: imagesUrls,
-    }) as unknown as Promise<HotelRoomResponse>;
+    });
+
+    return this.toResponse(hotelRoom as unknown as HotelRoomPopulated);
   }
 
   async findById(id: Types.ObjectId): Promise<HotelRoomResponse> {
@@ -33,13 +59,17 @@ export class HotelRoomService {
       throw new NotFoundException('Hotel room not found');
     }
 
-    return hotelRoom as unknown as HotelRoomResponse;
+    return this.toResponse(hotelRoom as unknown as HotelRoomPopulated);
   }
 
-  search(params: ISearchHotelRoomsParams): Promise<Array<HotelRoomResponse>> {
-    return this.hotelRoomRepository.getList(params) as unknown as Promise<
-      Array<HotelRoomResponse>
-    >;
+  async search(
+    params: ISearchHotelRoomsParams,
+  ): Promise<Array<HotelRoomResponse>> {
+    const hotelRooms = await this.hotelRoomRepository.getList(params);
+
+    return hotelRooms.map((room) =>
+      this.toResponse(room as unknown as HotelRoomPopulated),
+    );
   }
 
   async update(

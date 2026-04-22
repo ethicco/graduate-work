@@ -28,5 +28,5 @@ export class HotelRoomResponse {
 
   @ApiProperty({ description: 'Информация об отеле', type: HotelResponse })
   @Type(() => HotelResponse)
-  hotelId: HotelResponse;
+  hotel: HotelResponse;
 }

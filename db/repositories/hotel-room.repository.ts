@@ -22,7 +22,10 @@ export class HotelRoomRepository {
     return hotelRoom.populate('hotelId');
   }
 
-  update(id: Types.ObjectId, data: IHotelRoomUpdate): Promise<IHotelRoom | null> {
+  update(
+    id: Types.ObjectId,
+    data: IHotelRoomUpdate,
+  ): Promise<IHotelRoom | null> {
     return this.hotelRoomModel
       .findByIdAndUpdate(id, data, { new: true })
       .exec();
@@ -35,11 +38,14 @@ export class HotelRoomRepository {
   getList(params: ISearchHotelRoomParams): Promise<Array<IHotelRoom>> {
     const { hotelId, isEnabled, offset, limit } = params;
 
+    const filter: Record<string, unknown> = { hotelId };
+
+    if (isEnabled !== undefined) {
+      filter.isEnabled = isEnabled;
+    }
+
     return this.hotelRoomModel
-      .find({
-        hotelId,
-        isEnabled,
-      })
+      .find(filter)
       .populate('hotelId')
       .skip((offset - 1) * limit)
       .limit(limit)

@@ -20,7 +20,7 @@ export class HotelRoomCommonController {
   search(
     @Query() dto: HotelRoomListRequest,
   ): Promise<Array<HotelRoomResponse>> {
-    return this.hotelRoomService.search(dto);
+    return this.hotelRoomService.search({ ...dto, isEnabled: true });
   }
 
   @ApiOperation({

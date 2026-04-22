@@ -1,11 +1,16 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsInt, IsMongoId } from 'class-validator';
+import { IsInt, IsMongoId, IsOptional } from 'class-validator';
 
 export class HotelRoomListRequest {
-  @ApiProperty({ description: 'ID отеля', type: String, format: 'objectId' })
+  @ApiPropertyOptional({
+    description: 'ID отеля',
+    type: String,
+    format: 'objectId',
+  })
   @IsMongoId()
-  hotelId: string;
+  @IsOptional()
+  hotelId?: string;
 
   @ApiProperty({ description: 'Кол-во записей', type: Number })
   @Transform(({ value }) => +value)
