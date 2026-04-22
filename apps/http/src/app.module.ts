@@ -27,7 +27,7 @@ import path from 'node:path';
     }),
     ServeStaticModule.forRoot({
       rootPath: path.join(process.cwd(), 'public'),
-      serveRoot: '/resources/',
+      serveRoot: '/uploads/',
       exclude: ['/api*'],
       serveStaticOptions: {
         index: false,

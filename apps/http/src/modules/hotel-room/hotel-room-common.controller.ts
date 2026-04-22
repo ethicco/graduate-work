@@ -2,11 +2,17 @@ import { Controller, Get, Param, Query } from '@nestjs/common';
 import { HotelRoomService } from './hotel-room.service';
 import { HotelRoomListRequest } from './dto/request';
 import { HotelRoomResponse } from './dto';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCookieAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 
 @ApiTags('Комнаты отеля')
+@ApiCookieAuth()
 @Controller({ path: '/common/hotel-rooms', version: '1' })
 export class HotelRoomCommonController {
   constructor(private readonly hotelRoomService: HotelRoomService) {}

@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { HotelService } from './hotel.service';
 import {
+  ApiCookieAuth,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
@@ -26,6 +27,7 @@ import { Types } from 'mongoose';
 import { AuthGuard, RolesGuard } from '@/common/guards';
 import { UserRoleEnum } from '@/db';
 
+@ApiCookieAuth()
 @ApiTags('Отели')
 @UseGuards(AuthGuard, RolesGuard([UserRoleEnum.ADMIN]))
 @Controller({ path: '/admin/hotels', version: '1' })

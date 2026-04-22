@@ -10,7 +10,7 @@ import { SupportRequestService } from '../services';
 import { UseGuards } from '@nestjs/common';
 import { ChatAccessGuard, WsAuthGuard } from '../guards';
 
-@WebSocketGateway(9000, { cors: true, namespace: '/support-request' })
+@WebSocketGateway(9001, { cors: true, namespace: '/support-request' })
 export class SupportChatGateway {
   @WebSocketServer()
   server: Server;

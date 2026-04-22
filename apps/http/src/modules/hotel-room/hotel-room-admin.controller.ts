@@ -16,6 +16,7 @@ import {
 import {
   ApiBody,
   ApiConsumes,
+  ApiCookieAuth,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -25,6 +26,7 @@ import { fileFilter, storage } from './utils';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 
+@ApiCookieAuth()
 @ApiTags('Комнаты отеля')
 @Controller({ path: '/admin/hotel-rooms', version: '1' })
 export class HotelRoomAdminController {

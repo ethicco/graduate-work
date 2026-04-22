@@ -15,10 +15,12 @@ import {
   ReservationResponse,
 } from './dto';
 import {
+  ApiCookieAuth,
   ApiCreatedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
+  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
@@ -27,6 +29,7 @@ import { AuthGuard, RolesGuard } from '@/common/guards';
 import { UserRoleEnum } from '@/db';
 import { User } from '@/common/decorators';
 
+@ApiCookieAuth()
 @ApiTags('Бронирования')
 @UseGuards(AuthGuard, RolesGuard([UserRoleEnum.CLIENT]))
 @Controller({ path: '/client/reservations', version: '1' })
@@ -56,6 +59,12 @@ export class ReservationClientController {
   @ApiOperation({
     description: 'Отмена бронирования пользователя.',
     summary: 'Отмена бронирования пользователя.',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'ID бронирования',
+    type: String,
+    format: 'objectId',
   })
   @ApiNoContentResponse({ description: 'Бронь успешшно отменена' })
   @Delete(':id')
