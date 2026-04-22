@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
 
-class AppealUserResponse {
+export class AppealClientResponse {
   @ApiProperty({ description: 'ID пользователя.', format: 'objectId' })
   id: string;
 
@@ -20,11 +19,30 @@ export class AppealResponse {
   id: string;
 
   @ApiProperty({
-    description: 'ID пользоватея созданого обращения.',
-    type: AppealUserResponse,
+    description: 'ID пользователя, создавшего обращение.',
+    format: 'objectId',
   })
-  @Type(() => AppealUserResponse)
-  userId: string | AppealUserResponse;
+  userId: string;
+
+  @ApiProperty({ description: 'Дата создания обращения.' })
+  createdAt: Date;
+
+  @ApiProperty({ description: 'Флаг активности обращения.' })
+  isActive: boolean;
+
+  @ApiProperty({ description: 'Флаг есть ли новые сообщения.' })
+  hasNewMessages: boolean;
+}
+
+export class AppealManagerResponse {
+  @ApiProperty({ description: 'ID обращения.' })
+  id: string;
+
+  @ApiProperty({
+    description: 'Данные пользователя, создавшего обращение.',
+    type: AppealClientResponse,
+  })
+  client: AppealClientResponse;
 
   @ApiProperty({ description: 'Дата создания обращения.' })
   createdAt: Date;

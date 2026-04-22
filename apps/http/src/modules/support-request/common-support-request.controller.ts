@@ -1,10 +1,23 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { SupportRequestService } from './services';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ClientSupportRequestService,
+  EmployeeSupportRequestService,
+  SupportRequestService,
+} from './services';
 import { AuthGuard, RolesGuard } from '@/common/guards';
-import { UserRoleEnum } from '@/db';
+import { IMarkMessagesAsRead, UserRoleEnum } from '@/db';
 import {
   ApiCookieAuth,
   ApiCreatedResponse,
+  ApiNoContentResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
@@ -14,7 +27,6 @@ import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 import { SendMessageRequest } from './dto';
 import { User } from '@/common/decorators';
-import { ReadMessageResponse } from './dto/response/read-message.response';
 import { ReadMessageRequest } from './dto/request/read-message.response';
 
 @ApiCookieAuth()
@@ -22,7 +34,11 @@ import { ReadMessageRequest } from './dto/request/read-message.response';
 @UseGuards(AuthGuard, RolesGuard([UserRoleEnum.CLIENT, UserRoleEnum.MANAGER]))
 @Controller({ path: '/common/support-requests', version: '1' })
 export class CommonSupportRequestController {
-  constructor(private readonly supportRequestService: SupportRequestService) {}
+  constructor(
+    private readonly supportRequestService: SupportRequestService,
+    private readonly clientSupportRequestService: ClientSupportRequestService,
+    private readonly employeeSupportRequestService: EmployeeSupportRequestService,
+  ) {}
 
   @ApiOperation({
     description: 'Получение истории сообщений из обращения в техподдержку.',
@@ -30,7 +46,7 @@ export class CommonSupportRequestController {
   })
   @ApiOkResponse({ type: MessageResponse, isArray: true })
   @Get('/:id/messages')
-  getList(
+  getMessages(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
   ): Promise<Array<MessageResponse>> {
     return this.supportRequestService.getMessages(id);
@@ -58,13 +74,24 @@ export class CommonSupportRequestController {
     description: 'Отправка события, что сообщения прочитаны.',
     summary: 'Отправка события, что сообщения прочитаны.',
   })
-  @ApiCreatedResponse({ type: ReadMessageResponse })
+  @ApiNoContentResponse()
+  @HttpCode(204)
   @Post('/:id/messages/read')
-  readMessage(
+  async markMessagesAsRead(
     @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @Body() dto: ReadMessageRequest,
     @User() user: Express.User,
-  ): Promise<ReadMessageResponse> {
-    return this.supportRequestService.readMessage(id, user, dto);
+  ): Promise<void> {
+    const params: IMarkMessagesAsRead = {
+      userId: user.id,
+      supportRequestId: id.toString(),
+      createdBefore: dto.createdBefore,
+    };
+
+    if (user.role === UserRoleEnum.CLIENT) {
+      await this.clientSupportRequestService.markMessagesAsRead(params);
+    } else {
+      await this.employeeSupportRequestService.markMessagesAsRead(params);
+    }
   }
 }

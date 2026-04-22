@@ -3,8 +3,7 @@ import { Model, Types } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import type {
   IGetChatListParams,
-  IReadMessage,
-  IReadMessageResponse,
+  IMarkMessagesAsRead,
   ISendMessage,
   ISupportRequest,
   ISupportRequestCreate,
@@ -65,32 +64,41 @@ export class SupportRequestRepository {
       .exec();
   }
 
-  async readMessages(
-    id: Types.ObjectId,
-    userId: string,
-    dto: IReadMessage,
-  ): Promise<IReadMessageResponse> {
-    console.log(dto);
-
+  async markMessagesAsRead(params: IMarkMessagesAsRead): Promise<void> {
     await this.supportRequestModel.updateOne(
-      {
-        _id: id,
-      },
-      {
-        $set: {
-          'messages.$[msg].readAt': dto.readAt,
-        },
-      },
+      { _id: new Types.ObjectId(params.supportRequestId) },
+      { $set: { 'messages.$[msg].readAt': new Date() } },
       {
         arrayFilters: [
           {
             'msg.readAt': null,
-            'msg.authorId': { $ne: userId },
+            'msg.authorId': { $ne: new Types.ObjectId(params.userId) },
+            'msg.sentAt': { $lte: params.createdBefore },
           },
         ],
       },
     );
+  }
 
-    return { success: true };
+  async getUnreadCount(
+    supportRequestId: Types.ObjectId,
+    userId: string,
+  ): Promise<number> {
+    const request = await this.supportRequestModel
+      .findById(supportRequestId)
+      .select('messages')
+      .exec();
+
+    if (!request) return 0;
+
+    return (request.messages || []).filter(
+      (msg) => !msg.readAt && msg.authorId.toString() !== userId,
+    ).length;
+  }
+
+  async closeRequest(id: Types.ObjectId): Promise<void> {
+    await this.supportRequestModel
+      .findByIdAndUpdate(id, { isActive: false })
+      .exec();
   }
 }

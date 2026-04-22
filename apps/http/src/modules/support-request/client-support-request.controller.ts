@@ -30,12 +30,12 @@ export class ClientSupportRequestController {
     description: 'Создание обращения в поддержку.',
     summary: 'Создание обращения в поддержку.',
   })
-  @ApiCreatedResponse({ type: AppealResponse })
+  @ApiCreatedResponse({ type: AppealResponse, isArray: true })
   @Post('')
   create(
     @Body() dto: CreateAppealRequest,
     @User() user: Express.User,
-  ): Promise<AppealResponse> {
+  ): Promise<AppealResponse[]> {
     return this.clientSupportRequestService.createSupportRequest({
       text: dto.text,
       userId: user.id,
@@ -52,6 +52,6 @@ export class ClientSupportRequestController {
     @Query() dto: FindAppealSupportRequest,
     @User() user: Express.User,
   ): Promise<Array<AppealResponse>> {
-    return this.supportRequestService.findAppealSupportRequests(dto, user.id);
+    return this.supportRequestService.findSupportRequests(dto, user.id);
   }
 }

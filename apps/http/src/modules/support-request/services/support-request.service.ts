@@ -2,49 +2,48 @@ import {
   IMessage,
   ISendMessage,
   ISupportRequest,
+  IUser,
   SupportRequestRepository,
-  UserRoleEnum,
 } from '@/db';
 import { Types } from 'mongoose';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { AppealResponse, FindAppealSupportRequest } from '../dto';
+  AppealManagerResponse,
+  AppealResponse,
+  FindAppealSupportRequest,
+} from '../dto';
 import { MessageResponse } from '../dto/response/message.response';
-import { ReadMessageRequest } from '../dto/request/read-message.response';
-import { ReadMessageResponse } from '../dto/response/read-message.response';
-import { Subject, Subscription } from 'rxjs';
+
+const NEW_MESSAGE_EVENT = 'support-request.new-message';
 
 @Injectable()
 export class SupportRequestService {
-  private readonly messageStream = new Subject<{
-    supportRequest: ISupportRequest;
-    message: IMessage;
-  }>();
-
   constructor(
     private readonly supportRequestRepository: SupportRequestRepository,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   publish(supportRequest: ISupportRequest, message: IMessage) {
-    this.messageStream.next({ supportRequest, message });
+    this.eventEmitter.emit(NEW_MESSAGE_EVENT, { supportRequest, message });
   }
 
   subscribe(
     handler: (supportRequest: ISupportRequest, message: IMessage) => void,
   ): () => void {
-    const subscription: Subscription = this.messageStream.subscribe((event) =>
-      handler(event.supportRequest, event.message),
-    );
+    const listener = (event: {
+      supportRequest: ISupportRequest;
+      message: IMessage;
+    }) => handler(event.supportRequest, event.message);
 
-    return () => subscription.unsubscribe();
+    this.eventEmitter.on(NEW_MESSAGE_EVENT, listener);
+
+    return () => this.eventEmitter.off(NEW_MESSAGE_EVENT, listener);
   }
 
-  async findAppealSupportRequests(
+  async findSupportRequests(
     params: FindAppealSupportRequest,
-    userId?: string,
+    userId: string,
   ): Promise<Array<AppealResponse>> {
     const appealList = await this.supportRequestRepository.getList({
       ...params,
@@ -53,14 +52,47 @@ export class SupportRequestService {
 
     return appealList.map((appeal) => ({
       id: appeal.id,
-      userId: userId ? (appeal.userId as string) : appeal.userId,
+      userId,
       isActive: appeal.isActive,
       createdAt: appeal.createdAt,
-      hasNewMessages: !!appeal.messages?.length,
+      hasNewMessages: (appeal.messages || []).some(
+        ({ readAt, authorId }) =>
+          !readAt && (authorId as string).toString() !== userId,
+      ),
     }));
   }
 
-  async getMessages(supportRequestId: Types.ObjectId): Promise<MessageResponse[]> {
+  async findSupportRequestsForManager(
+    params: FindAppealSupportRequest,
+  ): Promise<Array<AppealManagerResponse>> {
+    const appealList = await this.supportRequestRepository.getList({
+      ...params,
+      userId: undefined,
+    });
+
+    return appealList.map((appeal) => {
+      const user = appeal.userId as Omit<IUser, 'role'>;
+      return {
+        id: appeal.id,
+        client: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          contactPhone: user.contactPhone,
+        },
+        isActive: appeal.isActive,
+        createdAt: appeal.createdAt,
+        hasNewMessages: (appeal.messages || []).some(
+          ({ readAt, authorId }) =>
+            !readAt && (authorId as string).toString() === user.id,
+        ),
+      };
+    });
+  }
+
+  async getMessages(
+    supportRequestId: Types.ObjectId,
+  ): Promise<MessageResponse[]> {
     const supportRequest =
       await this.supportRequestRepository.getSupportRequestById(
         supportRequestId,
@@ -106,25 +138,5 @@ export class SupportRequestService {
         name: message.authorId['name'] as string,
       },
     }));
-  }
-
-  async readMessage(
-    id: Types.ObjectId,
-    user: Express.User,
-    dto: ReadMessageRequest,
-  ): Promise<ReadMessageResponse> {
-    const supportRequest =
-      await this.supportRequestRepository.getSupportRequestById(id);
-
-    if (
-      user.role === UserRoleEnum.CLIENT &&
-      supportRequest?.userId !== user.id
-    ) {
-      throw new ForbiddenException('Access denied');
-    }
-
-    return this.supportRequestRepository.readMessages(id, user.id, {
-      readAt: dto.createdBefore,
-    });
   }
 }

@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validate } from '@/common/validator';
 import { MongooseModule } from '@nestjs/mongoose';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { UserModule } from './modules/user';
 import { HotelModule } from './modules/hotel';
 import { HotelRoomModule } from './modules/hotel-room';
@@ -16,6 +17,7 @@ import path from 'node:path';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, validate }),
+    EventEmitterModule.forRoot(),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
