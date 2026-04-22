@@ -2,27 +2,19 @@ import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer
 import { diskStorage } from 'multer';
 import path from 'node:path';
 
+export const UPLOADS_DIR = path.join(
+  process.cwd(),
+  'public',
+  'hotels',
+  'rooms',
+  'images',
+);
+
 export const storage = diskStorage({
-  destination(req, file, cb) {
-    cb(
-      null,
-      path.join(
-        __dirname,
-        '..',
-        '..',
-        '..',
-        '..',
-        '..',
-        '..',
-        '..',
-        'public',
-        'hotels',
-        'rooms',
-        'images',
-      ),
-    );
+  destination(_req, _file, cb) {
+    cb(null, UPLOADS_DIR);
   },
-  filename(req, file, cb) {
+  filename(_req, file, cb) {
     cb(null, `${Date.now()}-${file.originalname}`);
   },
 });

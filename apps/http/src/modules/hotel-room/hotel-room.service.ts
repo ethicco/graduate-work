@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import path from 'node:path';
 import { HotelRoomRepository, IHotelRoom, ISearchHotelRoomsParams } from '@/db';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import {
@@ -6,6 +7,7 @@ import {
   HotelRoomResponse,
   UpdateHotelRoomRequest,
 } from './dto';
+import { UPLOADS_DIR } from './utils';
 
 @Injectable()
 export class HotelRoomService {
@@ -50,7 +52,9 @@ export class HotelRoomService {
       hotelRoom?.images.filter((img) => !data.images.includes(img)) || [];
 
     try {
-      await Promise.all(deleteImages?.map((img) => fs.unlink(img)));
+      await Promise.all(
+        deleteImages?.map((img) => fs.unlink(path.join(UPLOADS_DIR, img))),
+      );
       console.log('Файлы удалёны');
     } catch (err) {
       console.error('Ошибка удаления', err);

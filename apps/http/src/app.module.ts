@@ -11,7 +11,7 @@ import { ReservationModule } from './modules/reservation';
 import { SupportRequestModule } from './modules/support-request/support-request.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'node:path';
+import path from 'node:path';
 
 @Module({
   imports: [
@@ -24,7 +24,7 @@ import { join } from 'node:path';
       inject: [ConfigService],
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '..', 'public'),
+      rootPath: path.join(process.cwd(), 'public'),
       serveRoot: '/resources/',
       exclude: ['/api*'],
       serveStaticOptions: {
