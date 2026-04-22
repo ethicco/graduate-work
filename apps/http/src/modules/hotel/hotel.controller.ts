@@ -22,6 +22,7 @@ import {
   UpdateHotelRequest,
 } from './dto';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 import { AuthGuard, RolesGuard } from '@/common/guards';
 import { UserRoleEnum } from '@/db';
 
@@ -58,7 +59,7 @@ export class HotelController {
   @ApiOkResponse({ type: HotelResponse })
   @Put(':id')
   update(
-    @Param('id', ParseObjectIdPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @Body() dto: UpdateHotelRequest,
   ) {
     return this.hotelService.update(id, dto);

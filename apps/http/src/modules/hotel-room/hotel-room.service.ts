@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { HotelRoomRepository, IHotelRoom, ISearchHotelRoomsParams } from '@/db';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Types } from 'mongoose';
 import {
   CreateHotelRoomRequest,
   HotelRoomResponse,
@@ -25,7 +26,7 @@ export class HotelRoomService {
     }) as unknown as Promise<HotelRoomResponse>;
   }
 
-  async findById(id: string): Promise<HotelRoomResponse> {
+  async findById(id: Types.ObjectId): Promise<HotelRoomResponse> {
     const hotelRoom = await this.hotelRoomRepository.getById(id);
 
     if (!hotelRoom) {
@@ -42,7 +43,7 @@ export class HotelRoomService {
   }
 
   async update(
-    id: string,
+    id: Types.ObjectId,
     data: UpdateHotelRoomRequest,
     files: Array<Express.Multer.File>,
   ): Promise<IHotelRoom> {

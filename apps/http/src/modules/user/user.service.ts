@@ -4,6 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { Types } from 'mongoose';
 import { CreateUserRequest } from './dto';
 import { CommonUtils } from '@/common/utils/common.utils';
 import { ConfigService } from '@nestjs/config';
@@ -46,7 +47,7 @@ export class UserService {
     };
   }
 
-  async findById(id: string): Promise<IUser> {
+  async findById(id: Types.ObjectId): Promise<IUser> {
     const user = await this.userRepository.getById(id);
 
     if (!user) {

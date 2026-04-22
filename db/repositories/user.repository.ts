@@ -1,5 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import type {
   ISearchUserParams,
@@ -19,11 +19,11 @@ export class UserRepository {
     return this.userModel.create(data);
   }
 
-  update(id: string, data: IUSerUpdate): Promise<IUser | null> {
+  update(id: Types.ObjectId, data: IUSerUpdate): Promise<IUser | null> {
     return this.userModel.findByIdAndUpdate(id, data).exec();
   }
 
-  getById(id: string): Promise<IUser | null> {
+  getById(id: Types.ObjectId): Promise<IUser | null> {
     return this.userModel.findById(id).exec();
   }
 
@@ -45,7 +45,7 @@ export class UserRepository {
       .exec();
   }
 
-  deleteById(id: string): Promise<IUser | null> {
+  deleteById(id: Types.ObjectId): Promise<IUser | null> {
     return this.userModel.findByIdAndDelete(id).exec();
   }
 }

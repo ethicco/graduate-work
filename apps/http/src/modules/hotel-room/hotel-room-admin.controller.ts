@@ -23,6 +23,7 @@ import {
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { fileFilter, storage } from './utils';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 
 @ApiTags('Комнаты отеля')
 @Controller({ path: '/admin/hotel-rooms', version: '1' })
@@ -135,7 +136,7 @@ export class HotelRoomAdminController {
   )
   @Put(':id')
   update(
-    @Param('id', ParseObjectIdPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @Body() dto: UpdateHotelRoomRequest,
     @UploadedFiles() { files }: { files: Array<Express.Multer.File> },
   ) {

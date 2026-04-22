@@ -1,5 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import type {
   IReservation,
@@ -34,11 +34,14 @@ export class ReservationRepository {
     return reservation.populate(['hotelId', 'roomId']);
   }
 
-  update(id: string, data: IReservationUpdate): Promise<IReservation | null> {
+  update(
+    id: Types.ObjectId,
+    data: IReservationUpdate,
+  ): Promise<IReservation | null> {
     return this.reservationModel.findByIdAndUpdate(id, data).exec();
   }
 
-  getById(id: string): Promise<IReservation | null> {
+  getById(id: Types.ObjectId): Promise<IReservation | null> {
     return this.reservationModel.findById(id).exec();
   }
 
@@ -49,7 +52,7 @@ export class ReservationRepository {
       .exec();
   }
 
-  deleteById(id: string): Promise<IReservation | null> {
+  deleteById(id: Types.ObjectId): Promise<IReservation | null> {
     return this.reservationModel.findByIdAndDelete(id).exec();
   }
 }

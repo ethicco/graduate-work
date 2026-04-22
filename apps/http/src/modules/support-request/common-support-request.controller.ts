@@ -11,6 +11,7 @@ import {
 } from '@nestjs/swagger';
 import { MessageResponse } from './dto/response/message.response';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 import { SendMessageRequest } from './dto';
 import { User } from '@/common/decorators';
 import { ReadMessageResponse } from './dto/response/read-message.response';
@@ -30,7 +31,7 @@ export class CommonSupportRequestController {
   @ApiOkResponse({ type: MessageResponse, isArray: true })
   @Get('/:id/messages')
   getList(
-    @Param('id', ParseObjectIdPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
   ): Promise<Array<MessageResponse>> {
     return this.supportRequestService.getMessages(id);
   }
@@ -42,7 +43,7 @@ export class CommonSupportRequestController {
   @ApiCreatedResponse({ type: MessageResponse, isArray: true })
   @Post('/:id/messages')
   sendMessage(
-    @Param('id', ParseObjectIdPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @Body() dto: SendMessageRequest,
     @User() user: Express.User,
   ): Promise<Array<MessageResponse>> {
@@ -60,7 +61,7 @@ export class CommonSupportRequestController {
   @ApiCreatedResponse({ type: ReadMessageResponse })
   @Post('/:id/messages/read')
   readMessage(
-    @Param('id', ParseObjectIdPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     @Body() dto: ReadMessageRequest,
     @User() user: Express.User,
   ): Promise<ReadMessageResponse> {

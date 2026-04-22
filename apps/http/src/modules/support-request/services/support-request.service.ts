@@ -5,6 +5,7 @@ import {
   SupportRequestRepository,
   UserRoleEnum,
 } from '@/db';
+import { Types } from 'mongoose';
 import {
   ForbiddenException,
   Injectable,
@@ -59,7 +60,7 @@ export class SupportRequestService {
     }));
   }
 
-  async getMessages(supportRequestId: string): Promise<MessageResponse[]> {
+  async getMessages(supportRequestId: Types.ObjectId): Promise<MessageResponse[]> {
     const supportRequest =
       await this.supportRequestRepository.getSupportRequestById(
         supportRequestId,
@@ -108,7 +109,7 @@ export class SupportRequestService {
   }
 
   async readMessage(
-    id: string,
+    id: Types.ObjectId,
     user: Express.User,
     dto: ReadMessageRequest,
   ): Promise<ReadMessageResponse> {

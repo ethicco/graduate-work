@@ -1,3 +1,4 @@
+import { Types } from 'mongoose';
 import { IMessage } from './message.interface';
 import { IUser } from './user.interface';
 
@@ -13,7 +14,7 @@ export interface ISupportRequestCreate
   extends Pick<ISupportRequest, 'userId'>, Pick<IMessage, 'text'> {}
 
 export interface ISendMessage extends Pick<IMessage, 'authorId' | 'text'> {
-  supportRequestId: string;
+  supportRequestId: Types.ObjectId;
 }
 
 export interface IMarkMessagesAsRead {

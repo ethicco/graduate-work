@@ -4,6 +4,7 @@ import { HotelRoomListRequest } from './dto/request';
 import { HotelRoomResponse } from './dto';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 
 @ApiTags('Комнаты отеля')
 @Controller({ path: '/common/hotel-rooms', version: '1' })
@@ -29,7 +30,7 @@ export class HotelRoomCommonController {
   @ApiOkResponse({ type: HotelRoomResponse })
   @Get(':id')
   getById(
-    @Param('id', ParseObjectIdPipe) id: string,
+    @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
   ): Promise<HotelRoomResponse> {
     return this.hotelRoomService.findById(id);
   }

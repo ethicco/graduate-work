@@ -5,6 +5,7 @@ import {
   HotelRoomRepository,
 } from '@/db';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Types } from 'mongoose';
 import { CreateReservationRequest } from './dto';
 
 @Injectable()
@@ -18,7 +19,7 @@ export class ReservationService {
     userId: string,
     data: CreateReservationRequest,
   ): Promise<IReservation> {
-    const hotelRoom = await this.hotelRoomRepository.getById(data.roomId);
+    const hotelRoom = await this.hotelRoomRepository.getById(new Types.ObjectId(data.roomId));
 
     if (!hotelRoom) {
       throw new NotFoundException('Hotel room not found');
@@ -31,7 +32,7 @@ export class ReservationService {
     });
   }
 
-  async removeReservation(userId: string, id: string): Promise<void> {
+  async removeReservation(userId: string, id: Types.ObjectId): Promise<void> {
     const reservation = await this.reservationRepository.deleteById(id);
 
     if (!reservation) {

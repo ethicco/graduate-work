@@ -1,5 +1,5 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import type {
   IGetChatListParams,
@@ -44,7 +44,7 @@ export class SupportRequestRepository {
       .exec();
   }
 
-  getSupportRequestById(id: string): Promise<ISupportRequest | null> {
+  getSupportRequestById(id: Types.ObjectId): Promise<ISupportRequest | null> {
     return this.supportRequestModel
       .findById(id)
       .populate('messages.authorId')
@@ -66,7 +66,7 @@ export class SupportRequestRepository {
   }
 
   async readMessages(
-    id: string,
+    id: Types.ObjectId,
     userId: string,
     dto: IReadMessage,
   ): Promise<IReadMessageResponse> {

@@ -22,6 +22,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
 import { AuthGuard, RolesGuard } from '@/common/guards';
 import { UserRoleEnum } from '@/db';
 import { User } from '@/common/decorators';
@@ -58,7 +59,7 @@ export class ReservationClientController {
   })
   @ApiNoContentResponse({ description: 'Бронь успешшно отменена' })
   @Delete(':id')
-  remove(@Param('id', ParseObjectIdPipe) id: string, userId: string) {
+  remove(@Param('id', ParseObjectIdPipe) id: Types.ObjectId, userId: string) {
     return this.reservationService.removeReservation(userId, id);
   }
 }

@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-
+import { Types } from 'mongoose';
 import { SupportRequestRepository } from '@/db';
 
 @Injectable()
@@ -15,8 +15,11 @@ export class ChatAccessGuard implements CanActivate {
     const chatId = data.chatId as string;
     const user = client.user;
 
-    const chat =
-      await this.supportRequestRepository.getSupportRequestById(chatId);
+    if (!Types.ObjectId.isValid(chatId)) return false;
+
+    const chat = await this.supportRequestRepository.getSupportRequestById(
+      new Types.ObjectId(chatId),
+    );
     if (!chat) return false;
 
     if (user.role === 'manager') return true;

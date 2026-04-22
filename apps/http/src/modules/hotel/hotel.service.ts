@@ -6,6 +6,7 @@ import {
   ISearchHotelParams,
 } from '@/db';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class HotelService {
@@ -15,7 +16,7 @@ export class HotelService {
     return this.hotelRepository.create(data);
   }
 
-  async findById(id: string): Promise<IHotel> {
+  async findById(id: Types.ObjectId): Promise<IHotel> {
     const hotel = await this.hotelRepository.getById(id);
 
     if (!hotel) {
@@ -29,7 +30,7 @@ export class HotelService {
     return this.hotelRepository.getList(params);
   }
 
-  async update(id: string, data: IHotelUpdate): Promise<IHotel> {
+  async update(id: Types.ObjectId, data: IHotelUpdate): Promise<IHotel> {
     const hotel = await this.hotelRepository.update(id, data);
 
     if (!hotel) {
