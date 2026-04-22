@@ -20,9 +20,8 @@ export class ReservationRepository {
   async create(data: IReservationCreate): Promise<IReservation> {
     const bookedRooms = await this.reservationModel.find({
       roomId: data.roomId,
-      $or: [
-        { dateFrom: { $lte: data.dateEnd }, dateTo: { $gte: data.dateStart } },
-      ],
+      dateStart: { $lte: data.dateEnd },
+      dateEnd: { $gte: data.dateStart },
     });
 
     if (bookedRooms.length) {

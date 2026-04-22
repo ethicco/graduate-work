@@ -24,7 +24,7 @@ export class ReservationResponse {
     description: 'Информация об комнате отеля',
     type: HotelRoomResponse,
   })
-  room: HotelRoomResponse;
+  hotelRoom: HotelRoomResponse;
 
   @ApiProperty({
     description: 'Дата заезда',

@@ -4,7 +4,11 @@ import {
   ReservationRepository,
   HotelRoomRepository,
 } from '@/db';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Types } from 'mongoose';
 import { CreateReservationRequest } from './dto';
 
@@ -19,7 +23,9 @@ export class ReservationService {
     userId: string,
     data: CreateReservationRequest,
   ): Promise<IReservation> {
-    const hotelRoom = await this.hotelRoomRepository.getById(new Types.ObjectId(data.roomId));
+    const hotelRoom = await this.hotelRoomRepository.getById(
+      new Types.ObjectId(data.roomId),
+    );
 
     if (!hotelRoom) {
       throw new NotFoundException('Hotel room not found');
@@ -32,14 +38,31 @@ export class ReservationService {
     });
   }
 
-  async removeReservation(userId: string, id: Types.ObjectId): Promise<void> {
+  async removeReservation(id: Types.ObjectId): Promise<void> {
     const reservation = await this.reservationRepository.deleteById(id);
 
     if (!reservation) {
       throw new NotFoundException('Reservation not found');
     }
+  }
 
-    return;
+  async removeClientReservation(
+    userId: string,
+    id: Types.ObjectId,
+  ): Promise<void> {
+    const reservation = await this.reservationRepository.getById(id);
+
+    if (!reservation) {
+      throw new NotFoundException('Reservation not found');
+    }
+
+    if (reservation.userId !== userId) {
+      throw new ForbiddenException(
+        'You do not have access to this reservation',
+      );
+    }
+
+    await this.reservationRepository.deleteById(id);
   }
 
   getReservations(

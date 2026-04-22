@@ -42,7 +42,7 @@ export class ReservationManagerController {
   })
   @ApiNoContentResponse({ description: 'Бронь успешшно отменена' })
   @Delete(':id')
-  remove(@Param('id', ParseObjectIdPipe) id: Types.ObjectId, userId: string) {
-    return this.reservationService.removeReservation(userId, id);
+  remove(@Param('id', ParseObjectIdPipe) id: Types.ObjectId) {
+    return this.reservationService.removeReservation(id);
   }
 }

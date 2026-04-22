@@ -59,7 +59,10 @@ export class ReservationClientController {
   })
   @ApiNoContentResponse({ description: 'Бронь успешшно отменена' })
   @Delete(':id')
-  remove(@Param('id', ParseObjectIdPipe) id: Types.ObjectId, userId: string) {
-    return this.reservationService.removeReservation(userId, id);
+  remove(
+    @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
+    @User() user: Express.User,
+  ) {
+    return this.reservationService.removeClientReservation(user.id, id);
   }
 }
